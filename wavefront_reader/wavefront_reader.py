@@ -109,10 +109,13 @@ def read_mtlfile(fname):
                 if len(data.split(' ')) > 1:
                     material[prefix] = tuple(float(d) for d in data.split(' '))
                 else:
-                    try:
-                        material[prefix] = int(data)
-                    except ValueError:
-                        material[prefix] = float(data)
+                    if data.isdigit():
+                        try:
+                            material[prefix] = int(data)
+                        except ValueError:
+                            material[prefix] = float(data)
+                    else:
+                        material[prefix] = data
 
     return materials
 
