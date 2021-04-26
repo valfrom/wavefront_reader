@@ -93,6 +93,15 @@ def read_objfile(fname):
 
     return geoms
 
+def is_didgit_or_array_of_digits(data):
+    for d in data.split(' '):
+        if d.isdigit():
+            continue
+        try:
+            float(d)
+        except ValueError:
+            return False
+    return True
 
 def read_mtlfile(fname):
     materials = {}
@@ -106,16 +115,15 @@ def read_mtlfile(fname):
                 material = {}
                 materials[data] = material
             elif materials:
-                if len(data.split(' ')) > 1:
+                if not is_didgit_or_array_of_digits(data):
+                    material[prefix] = data
+                elif len(data.split(' ')) > 1:
                     material[prefix] = tuple(float(d) for d in data.split(' '))
                 else:
-                    if data.isdigit():
-                        try:
-                            material[prefix] = int(data)
-                        except ValueError:
-                            material[prefix] = float(data)
-                    else:
-                        material[prefix] = data
+                    try:
+                        material[prefix] = int(data)
+                    except ValueError:
+                        material[prefix] = float(data)
 
     return materials
 
